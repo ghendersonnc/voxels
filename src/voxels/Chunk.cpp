@@ -68,9 +68,6 @@ namespace Voxels
         shader.setUniformMat4f("model", model);
         shader.setUniformMat4f("view", view);
         shader.setUniformMat4f("projection", projection);
-        auto color = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
-        color.x *= sin(time);
-        shader.setUniform4f("uColor", color);
         glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, nullptr);
     }
 
