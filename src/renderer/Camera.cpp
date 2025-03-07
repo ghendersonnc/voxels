@@ -44,9 +44,9 @@ namespace Voxels
         if (direction == 4)
             position -= glm::normalize(glm::cross(front, up)) * speed;
         if (direction == 5)
-            position += speed * up;
+            position += speed * glm::vec3(0.0f, 1.f, 0.f);
         if (direction == 6)
-            position -= speed * up;
+            position -= speed * glm::vec3(0.0f, 1.f, 0.f);
 
     }
 
@@ -84,12 +84,10 @@ namespace Voxels
 
     void Camera::updateVectors()
     {
-        glm::vec3 newFront;
-
-        newFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        newFront.y = sin(glm::radians(pitch));
-        newFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front = glm::normalize(newFront);
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = glm::normalize(front);
 
         right = glm::normalize(glm::cross(front, worldUp));
         up = glm::normalize(glm::cross(right, front));
