@@ -20,7 +20,6 @@ namespace Voxels
         void recompile();
         void use() const;
         void destroy() const;
-        void sayhello();
 
         void setUniform4f(const std::string& name, glm::vec4 vec) const;
         void setUniform4i(const std::string& name, glm::ivec4 vec) const;

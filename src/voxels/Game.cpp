@@ -151,6 +151,18 @@ namespace Voxels
         {
             camera.toggleZoom(false, 1.f);
         }
+
+
+
+
+        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+        {
+            for (auto& s : shaders)
+            {
+                s.second.recompile();
+            }
+        }
+
     }
 
     void Game::_processMouse()
@@ -181,9 +193,5 @@ namespace Voxels
         Shader shader(RESOURCE_PATH "shaders/main.vert", RESOURCE_PATH "shaders/main.frag");
 
         shaders.insert(std::make_pair(ChunkProgram, shader));
-        for (auto& s : shaders)
-        {
-            s.second.sayhello();
-        }
     }
 }

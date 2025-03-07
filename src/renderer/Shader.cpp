@@ -89,11 +89,6 @@ namespace Voxels
 		glDeleteProgram(mShaderId);
 	}
 
-    void Shader::sayhello()
-    {
-		std::cout << "hello\n";
-    }
-
     void Shader::setUniform4f(const std::string& name, glm::vec4 vec) const
     {
 		const int uniformLocation = glGetUniformLocation(mShaderId, name.data());
