@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include "OpenSimplexNoise.hpp"
 
@@ -18,12 +17,6 @@
 
 namespace Voxels
 {
-
-    int maxHeightGen()
-    {
-        return rand() % Definitions::CHUNK_SIZE;
-    }
-
     Chunk::Chunk()
     {
         mVertexArray.bind();
@@ -50,7 +43,7 @@ namespace Voxels
         mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex), (void*)offsetof(Vertex, texturePosition));
     }
 
-    void Chunk::draw(Shader& shader)
+    void Chunk::draw(Shader& shader, Camera& camera)
     {
         
         mVertexArray.bind();
@@ -61,16 +54,22 @@ namespace Voxels
         auto view = glm::mat4(1.0f);
         auto projection = glm::mat4(1.0f);
         float time = static_cast<float>(glfwGetTime());
-        model = glm::rotate(model, 0.5f, glm::vec3(1.5f, .5f, 0.5f));
-        view = glm::translate(view, glm::vec3(-10.0f, -10.0f, -70.0f));
-        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(Definitions::SCREEN_HEIGHT), 0.1f, 100.f);
+        model = glm::rotate(model, 0.5f, glm::vec3(0.f, .5f, 0.f));
+        view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+        projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(Definitions::SCREEN_HEIGHT), 0.1f, 100.f);
 
         shader.setUniformMat4f("model", model);
         shader.setUniformMat4f("view", view);
         shader.setUniformMat4f("projection", projection);
+        shader.setFloat("time", time);
+        
         glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, nullptr);
     }
 
-    
-
+    void Chunk::destroy()
+    {
+        mVertexBuffer.destroy();
+        mVertexArray.destroy();
+        mIndexBuffer.destroy();
+    }
 }

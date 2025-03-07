@@ -89,6 +89,11 @@ namespace Voxels
 		glDeleteProgram(mShaderId);
 	}
 
+    void Shader::sayhello()
+    {
+		std::cout << "hello\n";
+    }
+
     void Shader::setUniform4f(const std::string& name, glm::vec4 vec) const
     {
 		const int uniformLocation = glGetUniformLocation(mShaderId, name.data());
@@ -105,6 +110,12 @@ namespace Voxels
     {
 		const int uniformLocation = glGetUniformLocation(mShaderId, name.data());
 		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(mat));
+    }
+
+    void Shader::setFloat(const std::string& name, float value) const
+    {
+		const int uniformLocation = glGetUniformLocation(mShaderId, name.data());
+		glUniform1f(uniformLocation, value);
     }
 
     // ReSharper disable once CppMemberFunctionMayBeStatic

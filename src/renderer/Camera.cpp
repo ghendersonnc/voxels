@@ -1,0 +1,102 @@
+#include "Camera.h"
+
+#include <algorithm>
+#include <iostream>
+
+#include "Definitions.h"
+
+namespace Voxels
+{
+    Camera::Camera()
+    {
+        position = glm::vec3(10.0f, 24.0f, 60.0f);
+        worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
+        front = glm::vec3(0.0f, 0.0f, -1.0f);
+        yaw = -90.0f;
+        pitch = 0.0f;
+        fov = 45.0f;
+        mouseSens = 0.1f;
+        right = glm::normalize(glm::cross(right, front));
+        front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front.y = sin(glm::radians(pitch));
+        front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = glm::normalize(front);
+        right = glm::normalize(glm::cross(front, worldUp));
+        up = glm::normalize(glm::cross(right, front));
+    }
+    /*
+    * 1 = forward
+    * 2 = right
+    * 3 = backward
+    * 4 = left
+    * 5 = up
+    * 6 = down
+    */
+    void Camera::move(uint8_t direction, const float& deltaTime)
+    {
+        float speed = static_cast<float>(15 * deltaTime);
+        if (direction == 1)
+            position += speed * front;
+        if (direction == 3)
+            position -= speed * front;
+        if (direction == 2)
+            position += glm::normalize(glm::cross(front, up)) * speed;
+        if (direction == 4)
+            position -= glm::normalize(glm::cross(front, up)) * speed;
+        if (direction == 5)
+            position += speed * up;
+        if (direction == 6)
+            position -= speed * up;
+
+    }
+
+    void Camera::processMouse(float xoffset, float yoffset, bool constrainPitch)
+    {
+        xoffset *= mouseSens;
+        yoffset *= mouseSens;
+
+        yaw += xoffset;
+        pitch -= yoffset;
+
+        if (constrainPitch)
+        {
+            pitch = std::min(pitch, 89.0f);
+            pitch = std::max(pitch, -89.0f);
+        }
+
+        updateVectors();
+
+    }
+
+    void Camera::toggleZoom(bool zoomIn, float zoomAmount)
+    {
+        if (zoomIn)
+        {
+            fov -= zoomAmount;
+            fov = std::max(fov, 10.f);
+        }
+        else if (!zoomIn)
+        {
+            fov += zoomAmount;
+            fov = std::min(fov, 45.f);
+        }
+    }
+
+    void Camera::updateVectors()
+    {
+        glm::vec3 newFront;
+
+        newFront.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        newFront.y = sin(glm::radians(pitch));
+        newFront.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = glm::normalize(newFront);
+
+        right = glm::normalize(glm::cross(front, worldUp));
+        up = glm::normalize(glm::cross(right, front));
+    }
+
+}
+
+
+
+
