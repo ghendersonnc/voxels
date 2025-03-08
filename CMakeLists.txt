@@ -44,14 +44,15 @@ set(VOXEL_SOURCES
     "src/voxels/Chunk.cpp"
     "src/voxels/MeshBuilder.cpp"
     "src/voxels/MeshData.cpp"
- "src/voxels/Game.cpp")
+    "src/voxels/Game.cpp"
+)
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "src/Main.cpp"
     "src/Utility.cpp"           
     ${RENDERER_SOURCES}
     ${VOXEL_SOURCES}
-)
+ "src/voxels/Block.cpp")
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/renderer")

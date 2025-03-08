@@ -6,7 +6,7 @@
 namespace Voxels 
 {
     struct MeshBuilder {
-        static int buildMesh(VertexBuffer& vbo, IndexBuffer& ebo, const std::vector<int>& meshData);
+        static int buildMesh(VertexBuffer& vbo, IndexBuffer& ebo, const std::vector<int>& chunkData);
     };
 
     

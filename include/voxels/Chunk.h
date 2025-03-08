@@ -20,7 +20,7 @@ namespace Voxels
         VertexArray mVertexArray;
         VertexBuffer mVertexBuffer;
         IndexBuffer mIndexBuffer;
-        std::vector<int> mMeshData;
+        std::vector<int> mChunkData;
 
         int elementCount;
     };

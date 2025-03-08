@@ -77,10 +77,12 @@ namespace Voxels
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+
+        stbi_set_flip_vertically_on_load(true);
         int texWidth, texHeight, nrChannels;
-        unsigned char* data = stbi_load(RESOURCE_PATH "textures/dirt.jpg", &texWidth, &texHeight, &nrChannels, 4);
+        unsigned char* data = stbi_load(RESOURCE_PATH "textures/atlas.png", &texWidth, &texHeight, &nrChannels, 4);
 
         if (data)
         {
@@ -90,7 +92,6 @@ namespace Voxels
         stbi_image_free(data);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
-
         float lastFrame = 0.0f;
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -106,6 +107,7 @@ namespace Voxels
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glBindTexture(GL_TEXTURE_2D, texture);
+            shaders[ChunkProgram].use();
             for (auto& chunk : chunks)
             {
                 chunk.draw(shaders[ChunkProgram], camera);
@@ -190,7 +192,15 @@ namespace Voxels
 
     void Game::_createShaders()
     {
+        // Blocks n whatnot
         Shader shader(RESOURCE_PATH "shaders/main.vert", RESOURCE_PATH "shaders/main.frag");
+        shader.use();
+        /*
+         * 0.0625 is based on a 16x16 texture on a 256x256 atlas
+         *
+         * Since the atlas is always to be square, you can just divide the TextureX by the atlas' ResolutionX (16.f/256.f in this example)
+         */
+        shader.setFloat("textureSingleColumn", 0.0625);
 
         shaders.insert(std::make_pair(ChunkProgram, shader));
     }

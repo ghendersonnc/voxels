@@ -6,13 +6,13 @@
 #include <ctime>
 
 #include <GLFW/glfw3.h>
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
 #include "OpenSimplexNoise.hpp"
 
 #include "Definitions.h"
 #include "MeshBuilder.h"
-#include "glm/ext/matrix_clip_space.hpp"
-#include "glm/ext/matrix_transform.hpp"
-
+#include "enums.h"
 
 
 namespace Voxels
@@ -20,7 +20,7 @@ namespace Voxels
     Chunk::Chunk()
     {
         mVertexArray.bind();
-        mMeshData.reserve(Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE);
+        mChunkData.reserve(Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE);
         OpenSimplexNoise noise;
         for (short x = 0; x < Definitions::CHUNK_SIZE; x++)
         {
@@ -30,16 +30,20 @@ namespace Voxels
                 int noiseY = (noise.Evaluate(x * .1f, z * .1f) * 3.0f) + 20;
                 for (short y = 0; y < Definitions::CHUNK_SIZE; y++)
                 {
-                    if (y <= noiseY)
-                        mMeshData.push_back(1);
-                    else
-                        mMeshData.push_back(0);
+                    if (y > noiseY)
+                        mChunkData.push_back(Air);
+                    else if (y == noiseY)
+                        mChunkData.push_back(Grass);
+                    else if (y > noiseY - 3 && y < noiseY)
+                        mChunkData.push_back(Dirt);
+                    else if (y <= noiseY - 3)
+                        mChunkData.push_back(Stone);
                 }
             }
         }
-        elementCount = MeshBuilder::buildMesh(mVertexBuffer, mIndexBuffer, mMeshData);
+        elementCount = MeshBuilder::buildMesh(mVertexBuffer, mIndexBuffer, mChunkData);
         
-        mVertexArray.linkAttributes(mVertexBuffer, 0, 3, GL_BYTE, sizeof(Vertex), nullptr);
+        mVertexArray.linkAttributes(mVertexBuffer, 0, 3, GL_BYTE, sizeof(Vertex), (void*)offsetof(Vertex, vertexPosition));
         mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex), (void*)offsetof(Vertex, texturePosition));
     }
 
@@ -48,7 +52,6 @@ namespace Voxels
         
         mVertexArray.bind();
         mIndexBuffer.bind();
-        shader.use();
 
         auto model = glm::mat4(1.0f);
         auto view = glm::mat4(1.0f);
@@ -61,8 +64,7 @@ namespace Voxels
         shader.setUniformMat4f("model", model);
         shader.setUniformMat4f("view", view);
         shader.setUniformMat4f("projection", projection);
-        shader.setFloat("time", time);
-        
+                
         glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, nullptr);
     }
 

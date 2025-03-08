@@ -11,4 +11,14 @@ namespace Voxels
     {
         ChunkProgram = 0,
     };
+
+    enum Block : uint8_t
+    {
+        Air = 0,
+        Dirt = 1,
+        Grass = 2,
+        Stone = 3,
+        Wood = 4,
+        Sand = 5,
+    };
 }

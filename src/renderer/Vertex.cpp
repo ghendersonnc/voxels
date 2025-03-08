@@ -3,7 +3,7 @@
 namespace Voxels
 {
     
-    Vertex::Vertex(char _x, char _y, char _z, char _tx, char _ty)
+    Vertex::Vertex(int8_t _x, int8_t _y, int8_t _z, int8_t _tx, int8_t _ty)
     {
         vertexPosition[0] = _x;
         vertexPosition[1] = _y;
