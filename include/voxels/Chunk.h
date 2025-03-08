@@ -12,7 +12,7 @@ namespace Voxels
 {
     class Chunk {
     public:
-        Chunk();
+        Chunk(const glm::vec3 chunkPosition);
         void draw(Shader& shader, Camera& camera);
         void rebuild();
         void destroy();
@@ -22,6 +22,8 @@ namespace Voxels
         IndexBuffer mIndexBuffer;
         std::vector<int> mChunkData;
 
-        int elementCount;
+        int mElementCount;
+        glm::vec3 mPositionInWorld;
+        glm::vec3 mChunkPosition;
     };
 }

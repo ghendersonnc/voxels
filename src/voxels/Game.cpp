@@ -70,7 +70,18 @@ namespace Voxels
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         std::vector<Chunk> chunks;
-        chunks.emplace_back();
+        chunks.reserve(64);
+        for (int i = -4; i < 4; i++)
+        {
+            for (int j = -4; j < 4; j++)
+            {
+                chunks.emplace_back(glm::vec3(i, 0, j));
+            }
+        }
+
+        
+        
+        
         unsigned int texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -92,11 +103,12 @@ namespace Voxels
         stbi_image_free(data);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
-        float lastFrame = 0.0f;
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CW);
+        glBindTexture(GL_TEXTURE_2D, texture);
         
+        float lastFrame = 0.0f;
         while (!glfwWindowShouldClose(window))
         {
 
@@ -107,7 +119,6 @@ namespace Voxels
             _processMouse();
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glBindTexture(GL_TEXTURE_2D, texture);
             shaders[ChunkProgram].use();
             for (auto& chunk : chunks)
             {

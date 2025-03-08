@@ -9,7 +9,7 @@ namespace Voxels
 {
     Camera::Camera()
     {
-        position = glm::vec3(10.0f, 24.0f, 60.0f);
+        position = glm::vec3(0.0f, 32.0f, 0.0f);
         worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
         front = glm::vec3(0.0f, 0.0f, -1.0f);
         yaw = -90.0f;

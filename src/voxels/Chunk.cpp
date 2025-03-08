@@ -17,18 +17,27 @@
 
 namespace Voxels
 {
-    Chunk::Chunk()
+    Chunk::Chunk(const glm::vec3 chunkPosition)
     {
+        using namespace Definitions;
+        mChunkPosition = chunkPosition;
+        mPositionInWorld = glm::vec3(chunkPosition.x * CHUNK_SIZE, chunkPosition.y * CHUNK_SIZE, chunkPosition.z * CHUNK_SIZE);
         mVertexArray.bind();
-        mChunkData.reserve(Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE);
+        mChunkData.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
         OpenSimplexNoise noise;
-        for (short x = 0; x < Definitions::CHUNK_SIZE; x++)
+
+        int noiseEvalX = CHUNK_SIZE * chunkPosition.x;
+        int noiseEvalZ = CHUNK_SIZE * chunkPosition.z;
+
+        // changing this number is fun
+        const float depth = 10.f;
+        for (short x = 0; x < CHUNK_SIZE; x++)
         {
             
-            for (short z = 0; z < Definitions::CHUNK_SIZE; z++)
+            for (short z = 0; z < CHUNK_SIZE; z++)
             {
-                int noiseY = (noise.Evaluate(x * .1f, z * .1f) * 3.0f) + 20;
-                for (short y = 0; y < Definitions::CHUNK_SIZE; y++)
+                int noiseY = (noise.Evaluate((x+noiseEvalX) * .1f, (z+noiseEvalZ) * .1f) * depth) + 20;
+                for (short y = 0; y < CHUNK_SIZE; y++)
                 {
                     if (y > noiseY)
                         mChunkData.push_back(Air);
@@ -41,7 +50,7 @@ namespace Voxels
                 }
             }
         }
-        elementCount = MeshBuilder::buildMesh(mVertexBuffer, mIndexBuffer, mChunkData);
+        mElementCount = MeshBuilder::buildMesh(mVertexBuffer, mIndexBuffer, mChunkData);
         
         mVertexArray.linkAttributes(mVertexBuffer, 0, 3, GL_BYTE, sizeof(Vertex), (void*)offsetof(Vertex, vertexPosition));
         mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex), (void*)offsetof(Vertex, texturePosition));
@@ -57,15 +66,15 @@ namespace Voxels
         auto view = glm::mat4(1.0f);
         auto projection = glm::mat4(1.0f);
         float time = static_cast<float>(glfwGetTime());
-        model = glm::rotate(model, 0.5f, glm::vec3(0.f, .5f, 0.f));
+        model = glm::translate(model,mPositionInWorld);
         view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-        projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(Definitions::SCREEN_HEIGHT), 0.1f, 100.f);
+        projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(Definitions::SCREEN_HEIGHT), 0.1f, 300.f);
 
         shader.setUniformMat4f("model", model);
         shader.setUniformMat4f("view", view);
         shader.setUniformMat4f("projection", projection);
                 
-        glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, mElementCount, GL_UNSIGNED_INT, nullptr);
     }
 
     void Chunk::destroy()
