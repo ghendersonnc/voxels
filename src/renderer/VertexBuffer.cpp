@@ -8,7 +8,6 @@ namespace Voxels
     VertexBuffer::VertexBuffer()
     {
         glGenBuffers(1, &mVertexBufferId);
-        std::cout << std::endl;
     }
 
     VertexBuffer::VertexBuffer(const std::vector<float>& vertices, const GLsizeiptr size)
@@ -19,6 +18,12 @@ namespace Voxels
     }
 
     void VertexBuffer::setData(const std::vector<Vertex>& vertices, const GLsizeiptr size)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
+        glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);
+    }
+
+    void VertexBuffer::setData(const std::vector<float>& vertices, const GLsizeiptr size)
     {
         glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
         glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);
