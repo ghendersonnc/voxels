@@ -4,9 +4,6 @@
 
 #include <glad/glad.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 #include "Shader.h"
 #include "Chunk.h"
 #include "Utility.h"
@@ -71,42 +68,21 @@ namespace Voxels
     void Game::run()
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        std::vector<Chunk> chunks;
-        
-        unsigned int texture;
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        stbi_set_flip_vertically_on_load(true);
-        int texWidth, texHeight, nrChannels;
-        unsigned char* data = stbi_load(RESOURCE_PATH "textures/atlas.png", &texWidth, &texHeight, &nrChannels, 4);
-
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        stbi_image_free(data);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CW);
-        glBindTexture(GL_TEXTURE_2D, texture);
         
         float lastFrame = 0.0f;
         World world(shaders);
 
         Crosshair crosshair;
 
-
-        constexpr float red = 106.f / 255.f;
-        constexpr float green = 224.f / 255.f;
-        constexpr float blue = 247.f / 255.f;
+        constexpr float red = 92.f / 255.f;
+        constexpr float green = 70.f / 255.f;
+        constexpr float blue = 89.f / 255.f;
         while (!glfwWindowShouldClose(window))
         {
 
@@ -167,13 +143,6 @@ namespace Voxels
             camera.toggleBoost(false);
         }
 
-        if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-        {
-            for (auto& s : shaders)
-            {
-                s.second.recompile();
-            }
-        }
 
     }
 

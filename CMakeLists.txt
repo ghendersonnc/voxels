@@ -37,7 +37,7 @@ set(RENDERER_SOURCES
     "src/renderer/IndexBuffer.cpp"
     "src/renderer/Camera.cpp"
     "src/renderer/Vertex.cpp"
-)
+ "src/renderer/Texture.cpp")
 
 set(VOXEL_SOURCES
     "src/voxels/Chunk.cpp"

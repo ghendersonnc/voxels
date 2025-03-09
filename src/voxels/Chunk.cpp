@@ -30,23 +30,24 @@ namespace Voxels
         int noiseEvalZ = CHUNK_SIZE * chunkPosition.z;
 
         // changing this number is fun
-        const float depth = 3.f;
         for (short x = 0; x < CHUNK_SIZE; x++)
         {
             
             for (short z = 0; z < CHUNK_SIZE; z++)
             {
-                int noiseY = (noise.Evaluate((x+noiseEvalX) * .1f, (z+noiseEvalZ) * .1f) * depth) + 20;
+                constexpr float frequency = .1f;
+                constexpr float amplitude = 18.0f;
+                int noiseY = (noise.Evaluate((x+noiseEvalX) * frequency, (z+noiseEvalZ) * frequency) * amplitude) + 20;
                 for (short y = 0; y < CHUNK_SIZE; y++)
                 {
-                    if (y > noiseY)
+                    if (y <= noiseY - 3 || chunkPosition.y < 0)
+                        mChunkData.push_back(Stone);
+                    else if (y > noiseY)
                         mChunkData.push_back(Air);
                     else if (y == noiseY)
                         mChunkData.push_back(Grass);
                     else if (y > noiseY - 3 && y < noiseY)
                         mChunkData.push_back(Dirt);
-                    else if (y <= noiseY - 3)
-                        mChunkData.push_back(Stone);
                 }
             }
         }
@@ -68,7 +69,7 @@ namespace Voxels
         float time = static_cast<float>(glfwGetTime());
         model = glm::translate(model,mPositionInWorld);
         view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-        projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(Definitions::SCREEN_HEIGHT), 0.1f, 300.f);
+        projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(Definitions::SCREEN_HEIGHT), 0.1f, 1000.f);
 
         shader.setUniformMat4f("model", model);
         shader.setUniformMat4f("view", view);

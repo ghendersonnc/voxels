@@ -7,6 +7,7 @@
 #include "Chunk.h"
 #include "Shader.h"
 #include "enums.h"
+#include "Texture.h"
 
 namespace Voxels
 {
@@ -19,5 +20,6 @@ namespace Voxels
     private:
         std::unordered_map<ShaderProgram, Shader> mShaders;
         std::vector<Chunk> mChunks;
+        Texture mTexture;
     };
 }

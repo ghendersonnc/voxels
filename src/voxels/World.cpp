@@ -5,22 +5,26 @@
 
 namespace Voxels
 {
-    World::World(const std::unordered_map<ShaderProgram, Shader>& shaders)
+    World::World(const std::unordered_map<ShaderProgram, Shader>& shaders) : mTexture(RESOURCE_PATH "textures/atlas.png", true)
     {
         mShaders = shaders;
-        mChunks.reserve(64);
+        mChunks.reserve(256);
 
-        for (int i = -4; i < 4; i++)
+        for (int x = -4; x < 4; x++)
         {
-            for (int j = -4; j < 4; j++)
+            for (int z = -4; z < 4; z++)
             {
-                mChunks.emplace_back(glm::vec3(i, 0, j));
+                for (int y = -7; y < 1; y++)
+                {
+                    mChunks.emplace_back(glm::vec3(x, y, z));
+                }
             }
         }
     }
 
     void World::render(Camera& camera)
     {
+        mTexture.bind();
         mShaders[ChunkProgram].use();
         for (auto& chunk : mChunks)
         {
