@@ -30,7 +30,7 @@ namespace Voxels
         int noiseEvalZ = CHUNK_SIZE * chunkPosition.z;
 
         // changing this number is fun
-        const float depth = 10.f;
+        const float depth = 3.f;
         for (short x = 0; x < CHUNK_SIZE; x++)
         {
             

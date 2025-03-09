@@ -9,6 +9,7 @@ namespace Voxels
 {
     Camera::Camera()
     {
+        cameraSpeed = 15;
         position = glm::vec3(0.0f, 32.0f, 0.0f);
         worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
         front = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -34,7 +35,7 @@ namespace Voxels
     */
     void Camera::move(uint8_t direction, const float& deltaTime)
     {
-        float speed = static_cast<float>(15 * deltaTime);
+        float speed = static_cast<float>(cameraSpeed * deltaTime);
         if (direction == 1)
             position += speed * front;
         if (direction == 3)
@@ -80,6 +81,14 @@ namespace Voxels
             fov += zoomAmount;
             fov = std::min(fov, 45.f);
         }
+    }
+
+    void Camera::toggleBoost(bool boost)
+    {
+        if (boost)
+            cameraSpeed = 60;
+        else if (!boost)
+            cameraSpeed = 15;
     }
 
     void Camera::updateVectors()

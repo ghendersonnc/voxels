@@ -12,6 +12,8 @@
 #include "Utility.h"
 #include "Definitions.h"
 #include "Callbacks.h"
+#include "World.h"
+#include "Crosshair.h"
 
 namespace Voxels
 {
@@ -70,17 +72,6 @@ namespace Voxels
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         std::vector<Chunk> chunks;
-        chunks.reserve(64);
-        for (int i = -4; i < 4; i++)
-        {
-            for (int j = -4; j < 4; j++)
-            {
-                chunks.emplace_back(glm::vec3(i, 0, j));
-            }
-        }
-
-        
-        
         
         unsigned int texture;
         glGenTextures(1, &texture);
@@ -89,7 +80,6 @@ namespace Voxels
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
 
         stbi_set_flip_vertically_on_load(true);
         int texWidth, texHeight, nrChannels;
@@ -109,6 +99,14 @@ namespace Voxels
         glBindTexture(GL_TEXTURE_2D, texture);
         
         float lastFrame = 0.0f;
+        World world(shaders);
+
+        Crosshair crosshair;
+
+
+        constexpr float red = 106.f / 255.f;
+        constexpr float green = 224.f / 255.f;
+        constexpr float blue = 247.f / 255.f;
         while (!glfwWindowShouldClose(window))
         {
 
@@ -117,22 +115,16 @@ namespace Voxels
             lastFrame = currentFrame;
             _processInput();
             _processMouse();
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClearColor(red, green, blue, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            shaders[ChunkProgram].use();
-            for (auto& chunk : chunks)
-            {
-                chunk.draw(shaders[ChunkProgram], camera);
-            }
+
+            world.render(camera);
+            crosshair.draw(shaders);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-        for (auto& chunk : chunks)
-        {
-            chunk.destroy();
-        }
-
+        world.cleanup();
         for (auto& s : shaders)
         {
             s.second.destroy();
@@ -166,8 +158,14 @@ namespace Voxels
             camera.toggleZoom(false, 1.f);
         }
 
-
-
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        {
+            camera.toggleBoost(true);
+        }
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+        {
+            camera.toggleBoost(false);
+        }
 
         if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
         {
@@ -205,15 +203,18 @@ namespace Voxels
     void Game::_createShaders()
     {
         // Blocks n whatnot
-        Shader shader(RESOURCE_PATH "shaders/main.vert", RESOURCE_PATH "shaders/main.frag");
-        shader.use();
+        Shader mainShader(RESOURCE_PATH "shaders/main.vert", RESOURCE_PATH "shaders/main.frag");
+        mainShader.use();
         /*
          * 0.0625 is based on a 16x16 texture on a 256x256 atlas
          *
          * Since the atlas is always to be square, you can just divide the TextureX by the atlas' ResolutionX (16.f/256.f in this example)
          */
-        shader.setFloat("textureSingleColumn", 0.0625);
+        mainShader.setFloat("textureSingleColumn", 0.0625);
 
-        shaders.insert(std::make_pair(ChunkProgram, shader));
+        shaders.insert(std::make_pair(ChunkProgram, mainShader));
+
+        Shader crosshairShader(RESOURCE_PATH "shaders/crosshair.vert", RESOURCE_PATH "shaders/crosshair.frag");
+        shaders.insert(std::make_pair(CrosshairProgram, crosshairShader));
     }
 }

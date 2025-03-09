@@ -18,12 +18,14 @@ namespace Voxels
         float pitch;
         float fov;
         float mouseSens;
+        float cameraSpeed;
 
         Camera();
 
         void move(uint8_t direction, const float& deltaTime);
         void processMouse(float xoffset, float yoffset, bool constrainPitch = true);
         void toggleZoom(bool zoomIn, float zoomAmount);
+        void toggleBoost(bool boost);
         void updateVectors();
     };
 }

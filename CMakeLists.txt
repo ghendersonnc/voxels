@@ -30,7 +30,6 @@ FetchContent_MakeAvailable(glm)
 
 add_executable(${CMAKE_PROJECT_NAME})
 
-
 set(RENDERER_SOURCES
     "src/renderer/Shader.cpp"
     "src/renderer/VertexArray.cpp"
@@ -45,6 +44,9 @@ set(VOXEL_SOURCES
     "src/voxels/MeshBuilder.cpp"
     "src/voxels/MeshData.cpp"
     "src/voxels/Game.cpp"
+    "src/voxels/Block.cpp"
+    "src/voxels/World.cpp"
+    "src/voxels/Crosshair.cpp"
 )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
@@ -52,13 +54,19 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "src/Utility.cpp"           
     ${RENDERER_SOURCES}
     ${VOXEL_SOURCES}
- "src/voxels/Block.cpp")
+)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/renderer")
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/voxels")
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE RESOURCE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
+
+# Hot reload support for Visual Studio
+if (MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142)
+  target_link_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/INCREMENTAL>)  
+  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/ZI>)
+endif()
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
     glad

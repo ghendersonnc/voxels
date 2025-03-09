@@ -160,7 +160,7 @@ namespace Voxels
         }
 
         vbo.setData(vertices, sizeof(Vertex) * vertices.size());
-        ebo.setData(indices, sizeof(float) * indices.size());
+        ebo.setData(indices, sizeof(int) * indices.size());
         return indices.size();
     }
 }

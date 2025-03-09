@@ -10,6 +10,7 @@ namespace Voxels
     enum ShaderProgram : uint8_t
     {
         ChunkProgram = 0,
+        CrosshairProgram = 1,
     };
 
     enum Block : uint8_t
