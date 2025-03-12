@@ -75,7 +75,7 @@ namespace Voxels
         glFrontFace(GL_CW);
         
         float lastFrame = 0.0f;
-        World world(shaders, camera.position);
+        World world(shaders);
         Crosshair crosshair;
 
         constexpr float red = 92.f / 255.f;
@@ -92,6 +92,7 @@ namespace Voxels
             glClearColor(red, green, blue, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+            world.update(camera.position);
             world.render(camera);
             crosshair.draw(shaders);
 

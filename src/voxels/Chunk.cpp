@@ -1,9 +1,7 @@
 #include "Chunk.h"
 
 #include <iostream>
-#include <cmath>
-#include <cstdlib>
-#include <ctime>
+
 
 #include <GLFW/glfw3.h>
 #include "glm/ext/matrix_clip_space.hpp"
@@ -21,14 +19,33 @@ namespace Voxels
     Chunk::Chunk(glm::vec3 chunkPosition)
     {
         using namespace Definitions;
-        mChunkPosition = std::move(chunkPosition);
+        mCanRender = false;
+        ready = false;
+        mChunkPosition = chunkPosition;
         mPositionInWorld = glm::vec3(chunkPosition.x * CHUNK_SIZE, chunkPosition.y * CHUNK_SIZE, chunkPosition.z * CHUNK_SIZE);
-        mVertexArray.bind();
+
+        mChunkThread = std::thread(&Chunk::generate, this);
+        //generate();
+    }
+
+    Chunk::~Chunk()
+    {
+        if (mChunkThread.joinable())
+            mChunkThread.join();
+
+        mVertexBuffer.destroy();
+        mVertexArray.destroy();
+        mIndexBuffer.destroy();
+    }
+
+    void Chunk::generate()
+    {
+        using namespace Definitions;
         mChunkData.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
         OpenSimplexNoise noise;
 
-        int noiseEvalX = CHUNK_SIZE * mChunkPosition.x;
-        int noiseEvalZ = CHUNK_SIZE * mChunkPosition.z;
+        const int noiseEvalX = CHUNK_SIZE * static_cast<unsigned int>(mChunkPosition.x);
+        const int noiseEvalZ = CHUNK_SIZE * static_cast<unsigned int>(mChunkPosition.z);
 
         // changing this number is fun
         for (short x = 0; x < CHUNK_SIZE; x++)
@@ -52,17 +69,36 @@ namespace Voxels
                 }
             }
         }
-        mElementCount = MeshBuilder::buildMesh(mVertexBuffer, mIndexBuffer, mChunkData);
-
-        mVertexArray.linkAttributes(mVertexBuffer, 0, 3, GL_BYTE, sizeof(Vertex),
-            (void*)offsetof(Vertex, vertexPosition));
-        mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex),
-            (void*)offsetof(Vertex, texturePosition));
-        
+        MeshBuilder::buildMesh(mChunkData, vertices, indices);
+        mElementCount = static_cast<int>(indices.size());
+        mCanRender = true;
     }
 
     void Chunk::draw(Shader& shader, Camera& camera)
     {
+
+        if (!ready)
+        {
+            if (mCanRender)
+            {
+                mVertexArray.bind();
+
+                mVertexBuffer.setData(vertices, sizeof(Vertex) * vertices.size());
+                mIndexBuffer.setData(indices, sizeof(int) * indices.size());
+
+                mVertexArray.linkAttributes(mVertexBuffer, 0, 3, GL_BYTE, sizeof(Vertex),
+                    (void*)offsetof(Vertex, vertexPosition));
+                mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex),
+                    (void*)offsetof(Vertex, texturePosition));
+                vertices.clear();
+                vertices.shrink_to_fit();
+                indices.clear();
+                indices.shrink_to_fit();
+                ready = true;
+            }
+            return;
+        }
+
         mVertexArray.bind();
         mIndexBuffer.bind();
 
@@ -81,10 +117,4 @@ namespace Voxels
         glDrawElements(GL_TRIANGLES, mElementCount, GL_UNSIGNED_INT, nullptr);
     }
 
-    void Chunk::destroy()
-    {
-        mVertexBuffer.destroy();
-        mVertexArray.destroy();
-        mIndexBuffer.destroy();
-    }
 }

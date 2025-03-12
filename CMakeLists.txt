@@ -35,9 +35,9 @@ set(RENDERER_SOURCES
     "src/renderer/VertexArray.cpp"
     "src/renderer/VertexBuffer.cpp"
     "src/renderer/IndexBuffer.cpp"
-    "src/renderer/Camera.cpp"
     "src/renderer/Vertex.cpp"
- "src/renderer/Texture.cpp")
+    "src/renderer/Texture.cpp"
+)
 
 set(VOXEL_SOURCES
     "src/voxels/Chunk.cpp"
@@ -47,6 +47,7 @@ set(VOXEL_SOURCES
     "src/voxels/Block.cpp"
     "src/voxels/World.cpp"
     "src/voxels/Crosshair.cpp"
+    "src/voxels/Camera.cpp"
  )
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE

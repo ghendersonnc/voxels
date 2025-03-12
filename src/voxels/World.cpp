@@ -1,28 +1,44 @@
 #include "World.h"
 
 #include <iostream>
-
 #include "Definitions.h"
 
 namespace Voxels
 {
-    World::World(const std::unordered_map<ShaderProgram, Shader>& shaders, const glm::vec3& cameraPosition) : mTexture(RESOURCE_PATH "textures/atlas.png", true)
+    World::World(const std::unordered_map<ShaderProgram, Shader>& shaders) : mTexture(RESOURCE_PATH "textures/atlas.png", true)
+    {
+        activeLoading = 0;
+        mShaders = shaders;
+        loaded = false;
+    }
+
+    void World::update(const glm::vec3& cameraPosition)
     {
         using namespace Definitions;
-        mShaders = shaders;
-        
+        // TODO: check if camera enters new chunk, thus needing to generate new chunks and delete out-of-distance chunks
+
         constexpr uint8_t distance = RENDER_DISTANCE * 2 + 1;
 
         const auto chunkPositionX = static_cast<int>(cameraPosition.x) / static_cast<int>(CHUNK_SIZE);
         const auto chunkPositionZ = static_cast<int>(cameraPosition.z) / static_cast<int>(CHUNK_SIZE);
-        for (int x = chunkPositionX - RENDER_DISTANCE; x <= chunkPositionX + RENDER_DISTANCE; x++)
+        if (!loaded)
         {
-            for (int z = chunkPositionZ - RENDER_DISTANCE; z <= chunkPositionZ + RENDER_DISTANCE; z++)
+            for (int x = chunkPositionX - RENDER_DISTANCE; x <= chunkPositionX + RENDER_DISTANCE; x++)
             {
-                std::tuple position{ x, 0, z };
-                glm::vec3 pos = glm::vec3(x, 0, z);
-                mChunks.try_emplace(position, pos);
+                for (int z = chunkPositionZ - RENDER_DISTANCE; z <= chunkPositionZ + RENDER_DISTANCE; z++)
+                {
+                    chunkQueue.emplace(x, 0, z);
+                }
             }
+            loaded = true;
+        } else if (!chunkQueue.empty())
+        {
+            glm::vec3 position = chunkQueue.front();
+            chunkQueue.pop();
+
+            std::tuple positionTuple{ position.x, position.y, position.z };
+
+            mChunks.try_emplace(positionTuple, position);
         }
     }
 
@@ -30,19 +46,14 @@ namespace Voxels
     {
         mTexture.bind();
         mShaders[ChunkProgram].use();
-        for (auto& chunk : mChunks)
+        for (auto& [coords, chunk] : mChunks)
         {
-            chunk.second.draw(mShaders[ChunkProgram], camera);
+            chunk.draw(mShaders[ChunkProgram], camera);
         }
     }
 
     void World::cleanup()
     {
-        for (auto& chunk : mChunks)
-        {
-            chunk.second.destroy();
-        }
-
         for (auto& shader : mShaders)
         {
             shader.second.destroy();

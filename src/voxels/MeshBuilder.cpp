@@ -10,13 +10,10 @@
 
 namespace Voxels
 {
-    int MeshBuilder::buildMesh(VertexBuffer& vbo, IndexBuffer& ebo, const std::vector<int>& chunkData)
+    void MeshBuilder::buildMesh(const std::vector<int>& chunkData, std::vector<Vertex>& vertices, std::vector<int>& indices)
     {
-        std::vector<Vertex> vertices;
         constexpr int CHUNK_VOLUME = Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE;
         vertices.reserve(CHUNK_VOLUME);
-        // NOLINT(bugprone-implicit-widening-of-multiplication-result)
-        std::vector<int> indices;
         unsigned int currentVertex = 0;
         for (short x = 0; x < Definitions::CHUNK_SIZE; x++)
         {
@@ -159,8 +156,5 @@ namespace Voxels
             }
         }
 
-        vbo.setData(vertices, sizeof(Vertex) * vertices.size());
-        ebo.setData(indices, sizeof(int) * indices.size());
-        return indices.size();
     }
 }
