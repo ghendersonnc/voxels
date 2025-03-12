@@ -170,19 +170,15 @@ namespace Voxels
 
     void Game::_createShaders()
     {
-        // Blocks n whatnot
-        Shader mainShader(RESOURCE_PATH "shaders/main.vert", RESOURCE_PATH "shaders/main.frag");
-        mainShader.use();
+        shaders.try_emplace(ChunkProgram, RESOURCE_PATH "shaders/main.vert", RESOURCE_PATH "shaders/main.frag");
         /*
          * 0.0625 is based on a 16x16 texture on a 256x256 atlas
          *
          * Since the atlas is always to be square, you can just divide the TextureX by the atlas' ResolutionX (16.f/256.f in this example)
          */
-        mainShader.setFloat("textureSingleColumn", 0.0625);
 
-        shaders.insert(std::make_pair(ChunkProgram, mainShader));
-
-        Shader crosshairShader(RESOURCE_PATH "shaders/crosshair.vert", RESOURCE_PATH "shaders/crosshair.frag");
-        shaders.insert(std::make_pair(CrosshairProgram, crosshairShader));
+        shaders[ChunkProgram].use();
+        shaders[ChunkProgram].setFloat("textureSingleColumn", 0.0625);
+        shaders.try_emplace(CrosshairProgram, RESOURCE_PATH "shaders/crosshair.vert", RESOURCE_PATH "shaders/crosshair.frag");
     }
 }

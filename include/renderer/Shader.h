@@ -16,8 +16,7 @@ namespace Voxels
     public:
         Shader() = default;
         Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
-
-        void recompile();
+        ~Shader();
         void use() const;
         void destroy() const;
 

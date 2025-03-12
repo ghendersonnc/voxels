@@ -47,36 +47,9 @@ namespace Voxels
 		glDeleteShader(fragmentShader);
 	}
 
-    void Shader::recompile()
+    Shader::~Shader()
     {
-		glDeleteProgram(mShaderId);
-		std::string vertexShaderData = Utility::loadIntoString(mShaderPaths[VertexShader]);
-		std::string fragmentShaderData = Utility::loadIntoString(mShaderPaths[FragmentShader]);
-
-		const unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		const unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-		const char* shaderData = vertexShaderData.data();
-		int length = static_cast<int>(vertexShaderData.size());
-		glShaderSource(vertexShader, 1, &shaderData, &length);
-		glCompileShader(vertexShader);
-		_compileErrors(vertexShader);
-
-		shaderData = fragmentShaderData.data();
-		length = static_cast<int>(fragmentShaderData.size());
-		glShaderSource(fragmentShader, 1, &shaderData, &length);
-		glCompileShader(fragmentShader);
-		_compileErrors(fragmentShader);
-
-		mShaderId = glCreateProgram();
-
-		glAttachShader(mShaderId, vertexShader);
-		glAttachShader(mShaderId, fragmentShader);
-		glLinkProgram(mShaderId);
-
-		int linked = 0;
-
-		glGetProgramiv(mShaderId, GL_LINK_STATUS, &linked);
+		destroy();
     }
 
     void Shader::use() const
