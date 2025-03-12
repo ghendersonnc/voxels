@@ -13,8 +13,8 @@ namespace Voxels
         position = glm::vec3(0.0f, 32.0f, 0.0f);
         worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
         front = glm::vec3(0.0f, 0.0f, -1.0f);
-        yaw = 45.0f;
-        pitch = 0.0f;
+        yaw = 180.0f;
+        pitch = -5.0f;
         fov = 45.0f;
         mouseSens = 0.1f;
         right = glm::normalize(glm::cross(right, front));
