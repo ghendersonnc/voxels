@@ -17,19 +17,52 @@ namespace Voxels
         using namespace Definitions;
         // TODO: check if camera enters new chunk, thus needing to generate new chunks and delete out-of-distance chunks
 
-        constexpr uint8_t distance = RENDER_DISTANCE * 2 + 1;
 
         const auto chunkPositionX = static_cast<int>(cameraPosition.x) / static_cast<int>(CHUNK_SIZE);
         const auto chunkPositionZ = static_cast<int>(cameraPosition.z) / static_cast<int>(CHUNK_SIZE);
         if (!loaded)
         {
-            for (int x = chunkPositionX - RENDER_DISTANCE; x <= chunkPositionX + RENDER_DISTANCE; x++)
+            for (int renderDistance = 0; renderDistance <= RENDER_DISTANCE; renderDistance++)
             {
-                for (int z = chunkPositionZ - RENDER_DISTANCE; z <= chunkPositionZ + RENDER_DISTANCE; z++)
+                if (renderDistance == 0)
                 {
-                    chunkQueue.emplace(x, 0, z);
+                    chunkQueue.emplace(chunkPositionX, 0, chunkPositionZ);
+                    
                 }
+                else if (renderDistance > 0)
+                {
+                    // begin cardinals
+                    chunkQueue.emplace(chunkPositionX, 0, chunkPositionZ - renderDistance);
+                    chunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ);
+                    chunkQueue.emplace(chunkPositionX, 0, chunkPositionZ + renderDistance);
+                    chunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ);
+                    // end cardinals
+
+                    for (int j = 1; j <= renderDistance; j++)
+                    {
+                        chunkQueue.emplace(chunkPositionX - j, 0, chunkPositionZ + renderDistance);
+                        chunkQueue.emplace(chunkPositionX + j, 0, chunkPositionZ + renderDistance);
+
+                        if (j < renderDistance)
+                        {
+                            chunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ - j);
+                            chunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ + j);
+
+                            chunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ - j);
+                            chunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ + j);
+                        }
+
+                        chunkQueue.emplace(chunkPositionX - j, 0, chunkPositionZ - renderDistance);
+                        chunkQueue.emplace(chunkPositionX + j, 0, chunkPositionZ - renderDistance);
+
+                    }
+
+                }
+
+                
             }
+            constexpr int16_t distance = RENDER_DISTANCE * 2 + 1;
+            assert(static_cast<int>(chunkQueue.size()) == distance * distance);
             loaded = true;
         } else if (!chunkQueue.empty())
         {

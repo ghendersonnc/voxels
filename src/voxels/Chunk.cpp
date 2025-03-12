@@ -90,10 +90,14 @@ namespace Voxels
                     (void*)offsetof(Vertex, vertexPosition));
                 mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex),
                     (void*)offsetof(Vertex, texturePosition));
+
                 vertices.clear();
                 vertices.shrink_to_fit();
                 indices.clear();
                 indices.shrink_to_fit();
+                if (mChunkThread.joinable())
+                    mChunkThread.join();
+
                 ready = true;
             }
             return;
@@ -103,12 +107,11 @@ namespace Voxels
         mIndexBuffer.bind();
 
         auto model = glm::mat4(1.0f);
-        auto view = glm::mat4(1.0f);
-        auto projection = glm::mat4(1.0f);
-        float time = static_cast<float>(glfwGetTime());
-        model = glm::translate(model,mPositionInWorld);
-        view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
-        projection = glm::perspective(glm::radians(camera.fov), static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(Definitions::SCREEN_HEIGHT), 0.1f, 1000.f);
+        model = glm::translate(model, mPositionInWorld);
+        const auto view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
+        const auto projection = glm::perspective(glm::radians(camera.fov),
+                                           static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(
+                                               Definitions::SCREEN_HEIGHT), 0.1f, 1000.f);
 
         shader.setUniformMat4f("model", model);
         shader.setUniformMat4f("view", view);
