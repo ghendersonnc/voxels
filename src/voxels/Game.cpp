@@ -5,7 +5,6 @@
 #include <glad/glad.h>
 
 #include "Shader.h"
-#include "Chunk.h"
 #include "Utility.h"
 #include "Definitions.h"
 #include "Callbacks.h"
@@ -76,8 +75,7 @@ namespace Voxels
         glFrontFace(GL_CW);
         
         float lastFrame = 0.0f;
-        World world(shaders);
-
+        World world(shaders, camera.position);
         Crosshair crosshair;
 
         constexpr float red = 92.f / 255.f;

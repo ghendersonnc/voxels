@@ -2,22 +2,26 @@
 
 #include <iostream>
 
+#include "Definitions.h"
 
 namespace Voxels
 {
-    World::World(const std::unordered_map<ShaderProgram, Shader>& shaders) : mTexture(RESOURCE_PATH "textures/atlas.png", true)
+    World::World(const std::unordered_map<ShaderProgram, Shader>& shaders, const glm::vec3& cameraPosition) : mTexture(RESOURCE_PATH "textures/atlas.png", true)
     {
+        using namespace Definitions;
         mShaders = shaders;
-        mChunks.reserve(256);
+        
+        constexpr uint8_t distance = RENDER_DISTANCE * 2 + 1;
 
-        for (int x = -4; x < 4; x++)
+        const auto chunkPositionX = static_cast<int>(cameraPosition.x) / static_cast<int>(CHUNK_SIZE);
+        const auto chunkPositionZ = static_cast<int>(cameraPosition.z) / static_cast<int>(CHUNK_SIZE);
+        for (int x = chunkPositionX - RENDER_DISTANCE; x <= chunkPositionX + RENDER_DISTANCE; x++)
         {
-            for (int z = -4; z < 4; z++)
+            for (int z = chunkPositionZ - RENDER_DISTANCE; z <= chunkPositionZ + RENDER_DISTANCE; z++)
             {
-                for (int y = -7; y < 1; y++)
-                {
-                    mChunks.emplace_back(glm::vec3(x, y, z));
-                }
+                std::tuple position{ x, 0, z };
+                glm::vec3 pos = glm::vec3(x, 0, z);
+                mChunks.try_emplace(position, pos);
             }
         }
     }
@@ -28,7 +32,7 @@ namespace Voxels
         mShaders[ChunkProgram].use();
         for (auto& chunk : mChunks)
         {
-            chunk.draw(mShaders[ChunkProgram], camera);
+            chunk.second.draw(mShaders[ChunkProgram], camera);
         }
     }
 
@@ -36,7 +40,7 @@ namespace Voxels
     {
         for (auto& chunk : mChunks)
         {
-            chunk.destroy();
+            chunk.second.destroy();
         }
 
         for (auto& shader : mShaders)

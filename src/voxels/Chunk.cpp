@@ -17,30 +17,31 @@
 
 namespace Voxels
 {
-    Chunk::Chunk(const glm::vec3 chunkPosition)
+
+    Chunk::Chunk(glm::vec3 chunkPosition)
     {
         using namespace Definitions;
-        mChunkPosition = chunkPosition;
+        mChunkPosition = std::move(chunkPosition);
         mPositionInWorld = glm::vec3(chunkPosition.x * CHUNK_SIZE, chunkPosition.y * CHUNK_SIZE, chunkPosition.z * CHUNK_SIZE);
         mVertexArray.bind();
         mChunkData.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
         OpenSimplexNoise noise;
 
-        int noiseEvalX = CHUNK_SIZE * chunkPosition.x;
-        int noiseEvalZ = CHUNK_SIZE * chunkPosition.z;
+        int noiseEvalX = CHUNK_SIZE * mChunkPosition.x;
+        int noiseEvalZ = CHUNK_SIZE * mChunkPosition.z;
 
         // changing this number is fun
         for (short x = 0; x < CHUNK_SIZE; x++)
         {
-            
             for (short z = 0; z < CHUNK_SIZE; z++)
             {
                 constexpr float frequency = .1f;
-                constexpr float amplitude = 18.0f;
-                int noiseY = (noise.Evaluate((x+noiseEvalX) * frequency, (z+noiseEvalZ) * frequency) * amplitude) + 20;
+                constexpr float amplitude = 9.0f;
+                int noiseY = (noise.Evaluate((x + noiseEvalX) * frequency, (z + noiseEvalZ) * frequency) * amplitude) +
+                    20;
                 for (short y = 0; y < CHUNK_SIZE; y++)
                 {
-                    if (y <= noiseY - 3 || chunkPosition.y < 0)
+                    if (y <= noiseY - 3 || mChunkPosition.y < 0)
                         mChunkData.push_back(Stone);
                     else if (y > noiseY)
                         mChunkData.push_back(Air);
@@ -52,14 +53,16 @@ namespace Voxels
             }
         }
         mElementCount = MeshBuilder::buildMesh(mVertexBuffer, mIndexBuffer, mChunkData);
+
+        mVertexArray.linkAttributes(mVertexBuffer, 0, 3, GL_BYTE, sizeof(Vertex),
+            (void*)offsetof(Vertex, vertexPosition));
+        mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex),
+            (void*)offsetof(Vertex, texturePosition));
         
-        mVertexArray.linkAttributes(mVertexBuffer, 0, 3, GL_BYTE, sizeof(Vertex), (void*)offsetof(Vertex, vertexPosition));
-        mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex), (void*)offsetof(Vertex, texturePosition));
     }
 
     void Chunk::draw(Shader& shader, Camera& camera)
     {
-        
         mVertexArray.bind();
         mIndexBuffer.bind();
 
