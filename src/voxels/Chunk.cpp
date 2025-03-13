@@ -16,12 +16,12 @@
 namespace Voxels
 {
 
-    Chunk::Chunk(glm::vec3 chunkPosition)
+    Chunk::Chunk(glm::vec3 chunkPosition_)
     {
         using namespace Definitions;
         mCanRender = false;
         ready = false;
-        mChunkPosition = chunkPosition;
+        chunkPosition = chunkPosition_;
         mPositionInWorld = glm::vec3(chunkPosition.x * CHUNK_SIZE, chunkPosition.y * CHUNK_SIZE, chunkPosition.z * CHUNK_SIZE);
 
         mChunkThread = std::thread(&Chunk::generate, this);
@@ -44,8 +44,8 @@ namespace Voxels
         mChunkData.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
         OpenSimplexNoise noise;
 
-        const int noiseEvalX = CHUNK_SIZE * static_cast<unsigned int>(mChunkPosition.x);
-        const int noiseEvalZ = CHUNK_SIZE * static_cast<unsigned int>(mChunkPosition.z);
+        const int noiseEvalX = CHUNK_SIZE * static_cast<unsigned int>(chunkPosition.x);
+        const int noiseEvalZ = CHUNK_SIZE * static_cast<unsigned int>(chunkPosition.z);
 
         // changing this number is fun
         for (short x = 0; x < CHUNK_SIZE; x++)
@@ -58,7 +58,7 @@ namespace Voxels
                     20;
                 for (short y = 0; y < CHUNK_SIZE; y++)
                 {
-                    if (y <= noiseY - 3 || mChunkPosition.y < 0)
+                    if (y <= noiseY - 3 || chunkPosition.y < 0)
                         mChunkData.push_back(Stone);
                     else if (y > noiseY)
                         mChunkData.push_back(Air);

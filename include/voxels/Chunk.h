@@ -15,8 +15,10 @@ namespace Voxels
 {
     class Chunk {
     public:
+        glm::vec3 chunkPosition;
+
         Chunk() = default;
-        Chunk(glm::vec3 chunkPosition);
+        Chunk(glm::vec3 chunkPosition_);
         ~Chunk();
         void generate();
         void draw(Shader& shader, Camera& camera);
@@ -30,7 +32,6 @@ namespace Voxels
         std::vector<Vertex> vertices;
         std::vector<int> indices;
         glm::vec3 mPositionInWorld;
-        glm::vec3 mChunkPosition;
 
         int mElementCount;
         bool mCanRender;

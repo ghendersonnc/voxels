@@ -24,9 +24,11 @@ namespace Voxels
     private:
         std::unordered_map<ShaderProgram, Shader> mShaders;
         std::unordered_map<std::tuple<int,int,int>, Chunk> mChunks;
-        std::queue<glm::vec3> chunkQueue;
-        int activeLoading;
+        std::queue<glm::vec3> mChunkQueue;
+        int mActiveLoading;
         Texture mTexture;
-        bool loaded;
+        bool mLoaded;
+
+        int mLastChunkPositionX, mLastChunkPositionZ;
     };
 }
