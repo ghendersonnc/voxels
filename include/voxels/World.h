@@ -28,6 +28,7 @@ namespace Voxels
         int mActiveLoading;
         Texture mTexture;
         bool mLoaded;
+        long long mSeed;
 
         int mLastChunkPositionX, mLastChunkPositionZ;
     };

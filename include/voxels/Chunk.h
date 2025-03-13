@@ -18,9 +18,9 @@ namespace Voxels
         glm::vec3 chunkPosition;
 
         Chunk() = default;
-        Chunk(glm::vec3 chunkPosition_);
+        Chunk(glm::vec3 chunkPosition_, long long& seed);
         ~Chunk();
-        void generate();
+        void generate(long long& seed);
         void draw(Shader& shader, Camera& camera);
         void rebuild();
 

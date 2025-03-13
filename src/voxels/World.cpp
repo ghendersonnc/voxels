@@ -1,6 +1,9 @@
 #include "World.h"
 
 #include <iostream>
+
+#include <GLFW/glfw3.h>
+
 #include "Definitions.h"
 
 namespace Voxels
@@ -12,6 +15,7 @@ namespace Voxels
         mActiveLoading = 0;
         mShaders = shaders;
         mLoaded = false;
+        mSeed = static_cast<long long>(glfwGetTime());
     }
 
     void World::update(const glm::vec3& cameraPosition)
@@ -47,8 +51,6 @@ namespace Voxels
 
             mLoaded = false;
         }
-
-
 
         if (!mLoaded)
         {
@@ -97,7 +99,9 @@ namespace Voxels
 
             std::tuple positionTuple{ position.x, position.y, position.z };
 
-            mChunks.try_emplace(positionTuple, position);
+            {
+                mChunks.try_emplace(positionTuple, position, mSeed);
+            }
         }
     }
 

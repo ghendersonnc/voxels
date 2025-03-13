@@ -16,7 +16,7 @@
 namespace Voxels
 {
 
-    Chunk::Chunk(glm::vec3 chunkPosition_)
+    Chunk::Chunk(glm::vec3 chunkPosition_, long long& seed)
     {
         using namespace Definitions;
         mCanRender = false;
@@ -24,7 +24,7 @@ namespace Voxels
         chunkPosition = chunkPosition_;
         mPositionInWorld = glm::vec3(chunkPosition.x * CHUNK_SIZE, chunkPosition.y * CHUNK_SIZE, chunkPosition.z * CHUNK_SIZE);
 
-        mChunkThread = std::thread(&Chunk::generate, this);
+        mChunkThread = std::thread(&Chunk::generate, this, std::ref(seed));
         //generate();
     }
 
@@ -38,25 +38,25 @@ namespace Voxels
         mIndexBuffer.destroy();
     }
 
-    void Chunk::generate()
+    void Chunk::generate(long long& seed)   
     {
         using namespace Definitions;
         mChunkData.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
-        OpenSimplexNoise noise;
+        OpenSimplexNoise noise(seed);
 
-        const int noiseEvalX = CHUNK_SIZE * static_cast<unsigned int>(chunkPosition.x);
-        const int noiseEvalZ = CHUNK_SIZE * static_cast<unsigned int>(chunkPosition.z);
-
-        // changing this number is fun
-        for (short x = 0; x < CHUNK_SIZE; x++)
+        const int noiseEvalX = CHUNK_SIZE * static_cast<int>(chunkPosition.x);
+        const int noiseEvalZ = CHUNK_SIZE * static_cast<int>(chunkPosition.z);
+        
+        for (int x = 0; x < CHUNK_SIZE; x++)
         {
-            for (short z = 0; z < CHUNK_SIZE; z++)
+            for (int z = 0; z < CHUNK_SIZE; z++)
             {
                 constexpr float frequency = .1f;
                 constexpr float amplitude = 9.0f;
-                int noiseY = (noise.Evaluate((x + noiseEvalX) * frequency, (z + noiseEvalZ) * frequency) * amplitude) +
-                    20;
-                for (short y = 0; y < CHUNK_SIZE; y++)
+                const float evalX = (static_cast<float>(x) + static_cast<float>(noiseEvalX)) * frequency;
+                const float evalY = (static_cast<float>(z) + static_cast<float>(noiseEvalZ)) * frequency;
+                const int noiseY = static_cast<int>(noise.Evaluate(evalX, evalY) * amplitude + 20);
+                for (int y = 0; y < CHUNK_SIZE; y++)
                 {
                     if (y <= noiseY - 3 || chunkPosition.y < 0)
                         mChunkData.push_back(Stone);
