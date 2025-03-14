@@ -22,7 +22,6 @@ namespace Voxels
         ~Chunk();
         void generate(long long& seed);
         void draw(Shader& shader, Camera& camera);
-        void rebuild();
 
     private:
         VertexArray mVertexArray;
