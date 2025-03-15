@@ -30,13 +30,13 @@ namespace Voxels
                     bool doBlock = false;
                     if ((z > 0 && z < Definitions::CHUNK_SIZE - 1) || (directionIndex >= 0 && directionIndex < CHUNK_VOLUME))
                         doBlock = chunkData[directionIndex] == 0;
-
+                    constexpr float shadestuff = .5f;
                     const Block* block = &Blocks::blocks[cd];
                     if (z <= 0 || doBlock)
                     {
                        // north side
-                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideStartX, block->sideStartY);
-                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideEndX, block->sideStartY);
+                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
                         vertices.emplace_back(x + 1, y + 1, z + 0, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 0, y + 1, z + 0, block->sideEndX, block->sideEndY);
 
@@ -55,8 +55,8 @@ namespace Voxels
                     if (z >= Definitions::CHUNK_SIZE - 1 || doBlock)
                     {
                         // south side
-                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideStartX, block->sideStartY);
-                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideEndX, block->sideStartY);
+                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
                         vertices.emplace_back(x + 0, y + 1, z + 1, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 1, y + 1, z + 1, block->sideEndX, block->sideEndY);
 
@@ -69,15 +69,15 @@ namespace Voxels
                         currentVertex += 4;
                     }
 
-                    directionIndex = (x-1) * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE + z * Definitions::CHUNK_SIZE + y;
+                    directionIndex = (x - 1) * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE + z * Definitions::CHUNK_SIZE + y;
                     doBlock = false;
                     if ((x > 0 && x < Definitions::CHUNK_SIZE - 1) || (directionIndex >= 0 && directionIndex < CHUNK_VOLUME))
                         doBlock = chunkData[directionIndex] == 0;
                     if (x <= 0 || doBlock)
                     {
                         // West side
-                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideStartX, block->sideStartY);
-                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideEndX, block->sideStartY);
+                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
                         vertices.emplace_back(x + 0, y + 1, z + 0, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 0, y + 1, z + 1, block->sideEndX, block->sideEndY);
 
@@ -90,15 +90,15 @@ namespace Voxels
                         currentVertex += 4;
                     }
 
-                    directionIndex = (x+1) * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE + z * Definitions::CHUNK_SIZE + y;
+                    directionIndex = (x + 1) * Definitions::CHUNK_SIZE * Definitions::CHUNK_SIZE + z * Definitions::CHUNK_SIZE + y;
                     doBlock = false;
                     if ((x > 0 && x < Definitions::CHUNK_SIZE - 1) || (directionIndex >= 0 && directionIndex < CHUNK_VOLUME))
                         doBlock = chunkData[directionIndex] == 0;
                     if (x >= Definitions::CHUNK_SIZE - 1 || doBlock)
                     {
                         // East side    
-                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideStartX, block->sideStartY);
-                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideEndX, block->sideStartY);
+                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
                         vertices.emplace_back(x + 1, y + 1, z + 1, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 1, y + 1, z + 0, block->sideEndX, block->sideEndY);
 

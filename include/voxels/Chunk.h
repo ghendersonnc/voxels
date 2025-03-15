@@ -20,8 +20,8 @@ namespace Voxels
         Chunk() = default;
         Chunk(glm::vec3 chunkPosition_, long long& seed);
         ~Chunk();
-        void generate(long long& seed);
-        void draw(Shader& shader, Camera& camera);
+        void generate(const long long& seed);
+        void draw(const Shader& shader, const Camera& camera);
 
     private:
         VertexArray mVertexArray;

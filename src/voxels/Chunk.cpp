@@ -37,7 +37,7 @@ namespace Voxels
         mIndexBuffer.destroy();
     }
 
-    void Chunk::generate(long long& seed)   
+    void Chunk::generate(const long long& seed)   
     {
         using namespace Definitions;
         constexpr int chunkVolume = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
@@ -45,6 +45,7 @@ namespace Voxels
         OpenSimplexNoise noise(seed);
 
         const int noiseEvalX = CHUNK_SIZE * static_cast<int>(chunkPosition.x);
+        const int noiseEvalY = CHUNK_SIZE * static_cast<int>(chunkPosition.y);
         const int noiseEvalZ = CHUNK_SIZE * static_cast<int>(chunkPosition.z);
         
         for (int x = 0; x < CHUNK_SIZE; x++)
@@ -53,16 +54,18 @@ namespace Voxels
             {
                 constexpr float frequency = .1f;
                 constexpr float amplitude = 3.0f;
+                constexpr int8_t yMax = 20;
                 const float evalX = (static_cast<float>(x) + static_cast<float>(noiseEvalX)) * frequency;
                 const float evalY = (static_cast<float>(z) + static_cast<float>(noiseEvalZ)) * frequency;
-                const int noiseY = static_cast<int>(noise.Evaluate(evalX, evalY) * amplitude + 20);
-                const int noiseBiome = static_cast<int>(noise.Evaluate(evalX, evalY) * 5.0 + 20);
+                const int noiseY = static_cast<int>(noise.Evaluate(evalX, evalY) * amplitude + yMax);
+                const int noiseBiome = static_cast<int>(noise.Evaluate(evalX, evalY) * 5.0 + yMax);
                 
                 for (int y = 0; y < CHUNK_SIZE; y++)
                 {
-                    if (y <= noiseY - 3 || chunkPosition.y < 0)
-                        mChunkData.push_back(Stone);
-                    else if (y > noiseY)
+                    const float evalZ = (static_cast<float>(y) + static_cast<float>(noiseEvalY)) * frequency;
+                    const int noiseCave = static_cast<int>(noise.Evaluate(evalX, evalY, evalZ) * 5.0);
+
+                    if (y > noiseY || (y < noiseY - 3 && noiseCave < 0 && y > 0))
                         mChunkData.push_back(Air);
                     else if (y == noiseY)
                     {
@@ -70,9 +73,13 @@ namespace Voxels
                             mChunkData.push_back(Grass);
                         else if (noiseBiome < 19)
                             mChunkData.push_back(Sand);
+                        
                     }
-                    else if (y > noiseY - 3 && y < noiseY)
+                    else if (y <= noiseY - 1 && y >= noiseY - 2)
                         mChunkData.push_back(Dirt);
+                    else if (y <= noiseY - 3 || y == 0)
+                        mChunkData.push_back(Stone);
+                    
                 }
             }
         }
@@ -81,7 +88,7 @@ namespace Voxels
         mCanRender = true;
     }
 
-    void Chunk::draw(Shader& shader, Camera& camera)
+    void Chunk::draw(const Shader& shader, const Camera& camera)
     {
 
         if (!ready)
@@ -97,6 +104,7 @@ namespace Voxels
                     (void*)offsetof(Vertex, vertexPosition));
                 mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_BYTE, sizeof(Vertex),
                     (void*)offsetof(Vertex, texturePosition));
+                mVertexArray.linkAttributes(mVertexBuffer, 2, 3, GL_FLOAT, sizeof(Vertex), (void*)offsetof(Vertex, colorValue));
 
                 vertices.clear();
                 vertices.shrink_to_fit();
