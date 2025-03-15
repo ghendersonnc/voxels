@@ -19,6 +19,14 @@ namespace Voxels
         mSeed = static_cast<long long>(glfwGetTime());
     }
 
+    World::~World()
+    {
+        for (auto& shader : mShaders)
+        {
+            shader.second.destroy();
+        }
+    }
+
     void World::update(const glm::vec3& cameraPosition)
     {
         using namespace Definitions;
@@ -30,23 +38,7 @@ namespace Voxels
         {
             mLastChunkPositionX = chunkPositionX;
             mLastChunkPositionZ = chunkPositionZ;
-            
-
-            for (auto chunk = mChunks.begin(); chunk != mChunks.end();)
-            {
-                if (
-                    abs(static_cast<int>(chunk->second.chunkPosition.x) - chunkPositionX) > RENDER_DISTANCE ||
-                    abs(static_cast<int>(chunk->second.chunkPosition.z) - chunkPositionZ) > RENDER_DISTANCE
-                    )
-                {
-                    chunk = mChunks.erase(chunk);
-                }
-                else
-                {
-                    ++chunk;
-                }
-            }
-            
+                                                
             while (!mChunkQueue.empty())
                 mChunkQueue.pop();
 
@@ -112,16 +104,18 @@ namespace Voxels
         mShaders[ChunkProgram].use();
         for (auto chunk = mChunks.begin(); chunk != mChunks.end();)
         {
-            chunk->second.draw(mShaders[ChunkProgram], camera);
-            ++chunk;
-        }
-    }
-
-    void World::cleanup()
-    {
-        for (auto& shader : mShaders)
-        {
-            shader.second.destroy();
+            if (
+                abs(static_cast<int>(chunk->second.chunkPosition.x) - mLastChunkPositionX) > Definitions::RENDER_DISTANCE ||
+                abs(static_cast<int>(chunk->second.chunkPosition.z) - mLastChunkPositionZ) > Definitions::RENDER_DISTANCE
+                )
+            {
+                chunk = mChunks.erase(chunk);
+            }
+            else
+            {
+                chunk->second.draw(mShaders[ChunkProgram], camera);
+                ++chunk;
+            }
         }
     }
 }

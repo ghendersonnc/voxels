@@ -99,7 +99,6 @@ namespace Voxels
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
-        world.cleanup();
         for (auto& s : shaders)
         {
             s.second.destroy();

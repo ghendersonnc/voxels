@@ -18,9 +18,10 @@ namespace Voxels
     class World {
     public:
         World(const std::unordered_map<ShaderProgram, Shader>& shaders);
+        ~World();
         void update(const glm::vec3& cameraPosition);
         void render(Camera& camera);
-        void cleanup();
+
     private:
         std::unordered_map<ShaderProgram, Shader> mShaders;
         std::unordered_map<std::tuple<int,int,int>, Chunk> mChunks;
