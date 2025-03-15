@@ -65,7 +65,7 @@ namespace Voxels
                     const float evalZ = (static_cast<float>(y) + static_cast<float>(noiseEvalY)) * frequency;
                     const int noiseCave = static_cast<int>(noise.Evaluate(evalX, evalY, evalZ) * 5.0);
 
-                    if (y > noiseY || (y < noiseY - 3 && noiseCave < 0 && y > 0))
+                    if (y > noiseY || (y < noiseY - 3 && noiseCave <= 0 && y > 0))
                         mChunkData.push_back(Air);
                     else if (y == noiseY)
                     {
