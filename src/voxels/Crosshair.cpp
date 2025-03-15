@@ -2,15 +2,12 @@
 
 #include <vector>
 
-#include <glm/glm.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-
 #include "Definitions.h"
 
 
 namespace Voxels
 {
-    Crosshair::Crosshair()
+    Crosshair::Crosshair() : mTexture(RESOURCE_PATH "textures/crosshair.png", false)
     {
         using namespace Definitions;
 
@@ -18,10 +15,10 @@ namespace Voxels
         float x = 0.01f;
         float y = x * aspect;
         std::vector vertices{
-            x, y, // top right
-            x, -y, // bottom right
-            -x, -y, // bottom left
-            -x, y, // top left 
+            x, y,1.f, 1.f, // top right
+            x, -y, 1.f, 0.f, // bottom right
+            -x, -y,0.f,0.f, // bottom left
+            -x, y,0.f, 1.f // top left 
         };
 
         std::vector indices{
@@ -31,11 +28,13 @@ namespace Voxels
         mVertexArray.bind();
         mVertexBuffer.setData(vertices, sizeof(float) * vertices.size());
         mIndexBuffer.setData(indices, sizeof(int) * indices.size());
-        mVertexArray.linkAttributes(mVertexBuffer, 0, 2, GL_FLOAT, 2 * sizeof(float), nullptr);
+        mVertexArray.linkAttributes(mVertexBuffer, 0, 2, GL_FLOAT, 4 * sizeof(float), (void*)0);
+        mVertexArray.linkAttributes(mVertexBuffer, 1, 2, GL_FLOAT, 4 * sizeof(float), (void*)(2*sizeof(float)));
     }
 
     void Crosshair::draw(std::unordered_map<ShaderProgram, Shader>& shaders)
     {
+        mTexture.bind();
         shaders[CrosshairProgram].use();
         mVertexArray.bind();
         mIndexBuffer.bind();

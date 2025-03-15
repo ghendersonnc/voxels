@@ -7,6 +7,7 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "enums.h"
+#include "Texture.h"  
 
 namespace Voxels
 {
@@ -18,5 +19,6 @@ namespace Voxels
         VertexArray mVertexArray;
         VertexBuffer mVertexBuffer;
         IndexBuffer mIndexBuffer;
+        Texture mTexture;
     };
 }
