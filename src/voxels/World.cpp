@@ -47,39 +47,33 @@ namespace Voxels
 
         if (!mLoaded)
         {
-            for (int renderDistance = 0; renderDistance <= RENDER_DISTANCE; renderDistance++)
+            mChunkQueue.emplace(chunkPositionX, 0, chunkPositionZ); // center chunk
+            for (int renderDistance = 1; renderDistance <= RENDER_DISTANCE; renderDistance++)
             {
-                if (renderDistance == 0)
-                {
-                    mChunkQueue.emplace(chunkPositionX, 0, chunkPositionZ);
-                    
-                }
-                else if (renderDistance > 0)
-                {
-                    // begin cardinals
-                    mChunkQueue.emplace(chunkPositionX, 0, chunkPositionZ - renderDistance);
-                    mChunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ);
-                    mChunkQueue.emplace(chunkPositionX, 0, chunkPositionZ + renderDistance);
-                    mChunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ);
-                    // end cardinals
 
-                    for (int j = 1; j <= renderDistance; j++)
+                // begin cardinals
+                mChunkQueue.emplace(chunkPositionX, 0, chunkPositionZ - renderDistance);
+                mChunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ);
+                mChunkQueue.emplace(chunkPositionX, 0, chunkPositionZ + renderDistance);
+                mChunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ);
+                // end cardinals
+
+                for (int j = 1; j <= renderDistance; j++)
+                {
+                    mChunkQueue.emplace(chunkPositionX - j, 0, chunkPositionZ + renderDistance);
+                    mChunkQueue.emplace(chunkPositionX + j, 0, chunkPositionZ + renderDistance);
+
+                    if (j < renderDistance)
                     {
-                        mChunkQueue.emplace(chunkPositionX - j, 0, chunkPositionZ + renderDistance);
-                        mChunkQueue.emplace(chunkPositionX + j, 0, chunkPositionZ + renderDistance);
+                        mChunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ - j);
+                        mChunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ + j);
 
-                        if (j < renderDistance)
-                        {
-                            mChunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ - j);
-                            mChunkQueue.emplace(chunkPositionX + renderDistance, 0, chunkPositionZ + j);
-
-                            mChunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ - j);
-                            mChunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ + j);
-                        }
-
-                        mChunkQueue.emplace(chunkPositionX - j, 0, chunkPositionZ - renderDistance);
-                        mChunkQueue.emplace(chunkPositionX + j, 0, chunkPositionZ - renderDistance);
+                        mChunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ - j);
+                        mChunkQueue.emplace(chunkPositionX - renderDistance, 0, chunkPositionZ + j);
                     }
+
+                    mChunkQueue.emplace(chunkPositionX - j, 0, chunkPositionZ - renderDistance);
+                    mChunkQueue.emplace(chunkPositionX + j, 0, chunkPositionZ - renderDistance);
                 }
             }
             constexpr int16_t distance = RENDER_DISTANCE * 2 + 1;
