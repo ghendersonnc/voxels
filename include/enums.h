@@ -13,7 +13,7 @@ namespace Voxels
         CrosshairProgram = 1,
     };
 
-    enum Block : uint8_t
+    enum BlockType : uint8_t
     {
         Air = 0,
         Dirt = 1,

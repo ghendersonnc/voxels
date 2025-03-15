@@ -78,9 +78,9 @@ namespace Voxels
         World world(shaders);
         Crosshair crosshair;
 
-        constexpr float red = 92.f / 255.f;
-        constexpr float green = 70.f / 255.f;
-        constexpr float blue = 89.f / 255.f;
+        constexpr float red = 125.f / 255.f;
+        constexpr float green = 206.f / 255.f;
+        constexpr float blue = 235.f / 255.f;
         while (!glfwWindowShouldClose(window))
         {
 
