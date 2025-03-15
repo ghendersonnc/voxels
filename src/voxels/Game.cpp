@@ -1,11 +1,10 @@
 #include "Game.h"
-#include <vector>
 #include <iostream>
 
 #include <glad/glad.h>
+#include <spdlog/spdlog.h>
 
 #include "Shader.h"
-#include "Utility.h"
 #include "Definitions.h"
 #include "Callbacks.h"
 #include "World.h"
@@ -61,6 +60,7 @@ namespace Voxels
             return false;
 
         _createShaders();
+        
         return true;
     }
 
@@ -73,7 +73,7 @@ namespace Voxels
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glFrontFace(GL_CW);
-        
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         float lastFrame = 0.0f;
         World world(shaders);
         Crosshair crosshair;

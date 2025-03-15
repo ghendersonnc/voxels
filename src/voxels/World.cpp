@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <GLFW/glfw3.h>
+#include <spdlog/spdlog.h>
 
 #include "Definitions.h"
 
@@ -109,9 +110,10 @@ namespace Voxels
     {
         mTexture.bind();
         mShaders[ChunkProgram].use();
-        for (auto& [coords, chunk] : mChunks)
+        for (auto chunk = mChunks.begin(); chunk != mChunks.end();)
         {
-            chunk.draw(mShaders[ChunkProgram], camera);
+            chunk->second.draw(mShaders[ChunkProgram], camera);
+            ++chunk;
         }
     }
 

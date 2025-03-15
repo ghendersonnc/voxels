@@ -1,21 +1,19 @@
 #include "Chunk.h"
 
-#include <iostream>
-
-
 #include <GLFW/glfw3.h>
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "OpenSimplexNoise.hpp"
 
+
 #include "Definitions.h"
 #include "MeshBuilder.h"
 #include "enums.h"
+#include "spdlog/spdlog.h"
 
 
 namespace Voxels
 {
-
     Chunk::Chunk(glm::vec3 chunkPosition_, long long& seed)
     {
         using namespace Definitions;
@@ -24,8 +22,9 @@ namespace Voxels
         chunkPosition = chunkPosition_;
         mPositionInWorld = glm::vec3(chunkPosition.x * CHUNK_SIZE, chunkPosition.y * CHUNK_SIZE, chunkPosition.z * CHUNK_SIZE);
 
+        
         mChunkThread = std::thread(&Chunk::generate, this, std::ref(seed));
-        //generate();
+        
     }
 
     Chunk::~Chunk()
@@ -41,7 +40,8 @@ namespace Voxels
     void Chunk::generate(long long& seed)   
     {
         using namespace Definitions;
-        mChunkData.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+        constexpr int chunkVolume = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
+        mChunkData.reserve(chunkVolume);
         OpenSimplexNoise noise(seed);
 
         const int noiseEvalX = CHUNK_SIZE * static_cast<int>(chunkPosition.x);
@@ -52,10 +52,12 @@ namespace Voxels
             for (int z = 0; z < CHUNK_SIZE; z++)
             {
                 constexpr float frequency = .1f;
-                constexpr float amplitude = 9.0f;
+                constexpr float amplitude = 3.0f;
                 const float evalX = (static_cast<float>(x) + static_cast<float>(noiseEvalX)) * frequency;
                 const float evalY = (static_cast<float>(z) + static_cast<float>(noiseEvalZ)) * frequency;
                 const int noiseY = static_cast<int>(noise.Evaluate(evalX, evalY) * amplitude + 20);
+                const int noiseBiome = static_cast<int>(noise.Evaluate(evalX, evalY) * 5.0 + 20);
+                
                 for (int y = 0; y < CHUNK_SIZE; y++)
                 {
                     if (y <= noiseY - 3 || chunkPosition.y < 0)
@@ -63,7 +65,12 @@ namespace Voxels
                     else if (y > noiseY)
                         mChunkData.push_back(Air);
                     else if (y == noiseY)
-                        mChunkData.push_back(Grass);
+                    {
+                        if (noiseBiome >= 19)
+                            mChunkData.push_back(Grass);
+                        else if (noiseBiome < 19)
+                            mChunkData.push_back(Sand);
+                    }
                     else if (y > noiseY - 3 && y < noiseY)
                         mChunkData.push_back(Dirt);
                 }

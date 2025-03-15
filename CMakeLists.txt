@@ -25,8 +25,18 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/g-truc/glm.git
     GIT_TAG 1.0.1
 )
+
+
+#spdlog
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.15.1 
+)
+
 FetchContent_MakeAvailable(glfw)
 FetchContent_MakeAvailable(glm)
+FetchContent_MakeAvailable(spdlog)
 
 add_executable(${CMAKE_PROJECT_NAME})
 
@@ -62,6 +72,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/voxels")
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE RESOURCE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
+target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LOG_PATH="${CMAKE_CURRENT_SOURCE_DIR}/log/")
 
 # Hot reload support for Visual Studio
 if (MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142)
@@ -73,4 +84,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC
     glad
     glfw
     glm::glm
+    spdlog::spdlog
 )

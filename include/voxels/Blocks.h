@@ -14,6 +14,8 @@ namespace Voxels::Blocks
             0, 1, 0, 1,
             1, 2, 0, 1
         ),
-        Voxels::Block(0, 1, 1, 2)
+        Voxels::Block(0, 1, 1, 2),
+        Voxels::Block(0, 1, 1, 2),
+        Voxels::Block(4, 5, 0, 1),
     };
 }
