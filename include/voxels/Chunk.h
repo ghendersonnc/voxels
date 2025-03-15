@@ -1,6 +1,7 @@
 #pragma once
 
 #include <thread>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -18,9 +19,9 @@ namespace Voxels
         glm::vec3 chunkPosition;
 
         Chunk() = default;
-        Chunk(glm::vec3 chunkPosition_, long long& seed);
+        Chunk(glm::vec3 chunkPosition_, long long& seed_);
         ~Chunk();
-        void generate(const long long& seed);
+        void generate(long long& seed);
         void draw(const Shader& shader, const Camera& camera);
 
     private:
@@ -36,5 +37,7 @@ namespace Voxels
         bool mCanRender;
         bool ready;
         std::thread mChunkThread;
+
+        static void _generateChunkData(const long long& seed, std::vector<int>& chunkData, const glm::vec3& position);
     };
 }

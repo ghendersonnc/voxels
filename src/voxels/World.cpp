@@ -86,9 +86,7 @@ namespace Voxels
 
             std::tuple positionTuple{ position.x, position.y, position.z };
 
-            {
-                mChunks.try_emplace(positionTuple, position, mSeed);
-            }
+            mChunks.try_emplace(positionTuple, position, mSeed);
         }
     }
 
