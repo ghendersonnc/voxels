@@ -12,7 +12,7 @@
 #include "Camera.h"
 #include "Vertex.h"
 
-namespace Voxels 
+namespace Voxels    
 {
     class Chunk {
     public:

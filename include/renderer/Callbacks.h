@@ -1,9 +1,10 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-
+#include "Definitions.h"
 inline void windowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	
 	if (key == GLFW_KEY_L && action == GLFW_PRESS)
 	{
 		GLint polygonMode;
@@ -17,6 +18,19 @@ inline void windowKeyCallback(GLFWwindow* window, int key, int scancode, int act
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
+	if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
+	{
+		if (const int inputMode = glfwGetInputMode(window, GLFW_CURSOR); inputMode == GLFW_CURSOR_DISABLED)
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		else
+		{
+			using namespace Voxels::Definitions;
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetCursorPos(window, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+		}
+
+	}
 }
 
 inline void windowFramebufferSizeCallback(GLFWwindow* window, int width, int height)

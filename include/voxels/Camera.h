@@ -24,7 +24,7 @@ namespace Voxels
 
         void move(uint8_t direction, const float& deltaTime);
         void processMouse(float xoffset, float yoffset, bool constrainPitch = true);
-        void toggleZoom(bool zoomIn, float zoomAmount);
+        void toggleZoom(bool zoomIn, float zoomAmount, const float& deltaTime);
         void toggleBoost(bool boost);
         void updateVectors();
     };

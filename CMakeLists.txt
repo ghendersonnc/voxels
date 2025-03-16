@@ -98,7 +98,9 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE LOG_PATH="${CMAKE_CURRE
 # Hot reload support for Visual Studio
 if (MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142)
   target_link_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/INCREMENTAL>)  
-  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/Zi>)
+  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:Debug>:/ZI>)
+  target_link_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:RelWithDebInfo>:/INCREMENTAL>)  
+  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE $<$<CONFIG:RelWithDebInfo>:/ZI>)
 endif()
 
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC

@@ -81,7 +81,7 @@ namespace Voxels
     void Game::run()
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
+        
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glEnable(GL_CULL_FACE);
@@ -101,6 +101,8 @@ namespace Voxels
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
             ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
+            ImGui::SetWindowSize(ImVec2(120.f, 40.f));
+            
             float currentFrame = static_cast<float>(glfwGetTime());
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
@@ -143,11 +145,11 @@ namespace Voxels
 
         if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
         {
-            camera.toggleZoom(true, 1.f);
+            camera.toggleZoom(true, 180.f, deltaTime);
         }
         if (glfwGetKey(window, GLFW_KEY_C) == GLFW_RELEASE)
         {
-            camera.toggleZoom(false, 1.f);
+            camera.toggleZoom(false, 180.f, deltaTime);
         }
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
@@ -159,11 +161,15 @@ namespace Voxels
             camera.toggleBoost(false);
         }
 
+        
+
 
     }
 
     void Game::_processMouse()
     {
+        if (const int inputMode = glfwGetInputMode(window, GLFW_CURSOR); inputMode == GLFW_CURSOR_NORMAL)
+            return;
         double mouseX, mouseY;
         glfwGetCursorPos(window, &mouseX, &mouseY);
 

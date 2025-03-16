@@ -70,16 +70,16 @@ namespace Voxels
 
     }
 
-    void Camera::toggleZoom(bool zoomIn, float zoomAmount)
+    void Camera::toggleZoom(bool zoomIn, float zoomAmount, const float& deltaTime)
     {
         if (zoomIn)
         {
-            fov -= zoomAmount;
+            fov -= zoomAmount * deltaTime;
             fov = std::max(fov, 10.f);
         }
         else if (!zoomIn)
         {
-            fov += zoomAmount;
+            fov += zoomAmount * deltaTime;
             fov = std::min(fov, 45.f);
         }
     }
