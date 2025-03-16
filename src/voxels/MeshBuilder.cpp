@@ -33,13 +33,13 @@ namespace Voxels
                         pushFace = chunkData[directionIndex] == 0;
                     else if (z == 0)
                         pushFace = north[x * CHUNK_SIZE * CHUNK_SIZE + (CHUNK_SIZE - 1) * CHUNK_SIZE + y] == 0;
-                    constexpr float shadestuff = .5f;
+
                     const Block* block = &Blocks::blocks[cd];
                     if (pushFace)
                     {
                        // north side
-                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
-                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideStartX, block->sideStartY);
+                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideEndX, block->sideStartY);
                         vertices.emplace_back(x + 1, y + 1, z + 0, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 0, y + 1, z + 0, block->sideEndX, block->sideEndY);
 
@@ -60,8 +60,8 @@ namespace Voxels
                     if (pushFace)
                     {
                         // south side
-                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
-                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideStartX, block->sideStartY);
+                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideEndX, block->sideStartY);
                         vertices.emplace_back(x + 0, y + 1, z + 1, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 1, y + 1, z + 1, block->sideEndX, block->sideEndY);
 
@@ -83,8 +83,8 @@ namespace Voxels
                     if (pushFace)
                     {
                         // West side
-                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
-                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 0, y + 0, z + 0, block->sideStartX, block->sideStartY);
+                        vertices.emplace_back(x + 0, y + 0, z + 1, block->sideEndX, block->sideStartY);
                         vertices.emplace_back(x + 0, y + 1, z + 0, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 0, y + 1, z + 1, block->sideEndX, block->sideEndY);
 
@@ -106,8 +106,8 @@ namespace Voxels
                     if (pushFace)
                     {
                         // East side    
-                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideStartX, block->sideStartY, shadestuff, shadestuff, shadestuff);
-                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideEndX, block->sideStartY, shadestuff, shadestuff, shadestuff);
+                        vertices.emplace_back(x + 1, y + 0, z + 1, block->sideStartX, block->sideStartY);
+                        vertices.emplace_back(x + 1, y + 0, z + 0, block->sideEndX, block->sideStartY);
                         vertices.emplace_back(x + 1, y + 1, z + 1, block->sideStartX, block->sideEndY);
                         vertices.emplace_back(x + 1, y + 1, z + 0, block->sideEndX, block->sideEndY);
 

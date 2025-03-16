@@ -3,11 +3,11 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "OpenSimplexNoise.hpp"
+#include "spdlog/spdlog.h"
 
 #include "Definitions.h"
 #include "MeshBuilder.h"
 #include "enums.h"
-#include "spdlog/spdlog.h"
 
 namespace Voxels
 {
@@ -85,7 +85,7 @@ namespace Voxels
         const auto projection = glm::perspective(glm::radians(camera.fov),
                                            static_cast<float>(Definitions::SCREEN_WIDTH) / static_cast<float>(
                                                Definitions::SCREEN_HEIGHT), 0.1f, 1000.f);
-
+        
         shader.setUniformMat4f("model", model);
         shader.setUniformMat4f("view", view);
         shader.setUniformMat4f("projection", projection);

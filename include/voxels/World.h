@@ -7,6 +7,8 @@
 #include <glm/glm.hpp>
 
 #include "Camera.h"
+#include "Camera.h"
+#include "Camera.h"
 #include "Chunk.h"
 #include "Shader.h"
 #include "enums.h"
@@ -19,7 +21,7 @@ namespace Voxels
     public:
         World(const std::unordered_map<ShaderProgram, Shader>& shaders);
         ~World();
-        void update(const glm::vec3& cameraPosition);
+        void update(Camera& camera);
         void render(Camera& camera);
 
     private:

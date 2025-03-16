@@ -1,6 +1,5 @@
 #pragma once
 
-#include "IndexBuffer.h"
 #include "VertexBuffer.h"
 
 namespace Voxels 
