@@ -46,7 +46,7 @@ namespace Voxels
         glfwMakeContextCurrent(window);
         glfwSetKeyCallback(window, windowKeyCallback);
         glfwSetFramebufferSizeCallback(window, windowFramebufferSizeCallback);
-        glfwSwapInterval(0);
+        glfwSwapInterval(1);
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD\n";

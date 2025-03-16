@@ -16,7 +16,11 @@ namespace Voxels::Blocks
             1, 2, 0, 1, Grass
         ),
         Block(0, 1, 1, 2, Stone),
-        Block(0, 1, 1, 2, Wood),
+        Block(
+            2, 3, 1, 2,
+            2, 3, 1, 2,
+            2, 3, 0, 1, Wood
+        ),
         Block(4, 5, 0, 1, Sand),
     };
 }
