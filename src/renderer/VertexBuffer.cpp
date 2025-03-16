@@ -1,8 +1,6 @@
 #include "VertexBuffer.h"
 
-#include <iostream>
-#include "MeshBuilder.h"
-
+#include "Vertex.h"
 namespace Voxels
 {
     VertexBuffer::VertexBuffer()
@@ -17,17 +15,16 @@ namespace Voxels
         glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);
     }
 
-    void VertexBuffer::setData(const std::vector<Vertex>& vertices, const GLsizeiptr size)
+    template <typename T>
+    void VertexBuffer::setData(const std::vector<T>& vertices, const GLsizeiptr size)
     {
         glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
         glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);
     }
 
-    void VertexBuffer::setData(const std::vector<float>& vertices, const GLsizeiptr size)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, mVertexBufferId);
-        glBufferData(GL_ARRAY_BUFFER, size, vertices.data(), GL_STATIC_DRAW);
-    }
+    template void VertexBuffer::setData<int8_t>(const std::vector<int8_t>& vertices, GLsizeiptr size);
+    template void VertexBuffer::setData<Vertex>(const std::vector<Vertex>& vertices, GLsizeiptr size);
+    template void VertexBuffer::setData<float>(const std::vector<float>& vertices, GLsizeiptr size);
 
     void VertexBuffer::bind()
     {
