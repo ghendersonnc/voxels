@@ -1,9 +1,9 @@
 #include "World.h"
 
-#include <iostream>
 
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
+#include "imgui.h"
 
 #include "Definitions.h"
 
@@ -32,7 +32,7 @@ namespace Voxels
         using namespace Definitions;
         const auto chunkPositionX = static_cast<int>(camera.position.x) / static_cast<int>(CHUNK_SIZE);
         const auto chunkPositionZ = static_cast<int>(camera.position.z) / static_cast<int>(CHUNK_SIZE);
-
+        
 
         if (chunkPositionX != mLastChunkPositionX || chunkPositionZ != mLastChunkPositionZ)
         {

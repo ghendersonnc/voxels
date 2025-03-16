@@ -1,8 +1,13 @@
+
+
 #include "Game.h"
 #include <iostream>
 
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 
 #include "Shader.h"
 #include "Definitions.h"
@@ -41,6 +46,7 @@ namespace Voxels
         glfwMakeContextCurrent(window);
         glfwSetKeyCallback(window, windowKeyCallback);
         glfwSetFramebufferSizeCallback(window, windowFramebufferSizeCallback);
+        glfwSwapInterval(0);
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
             std::cout << "Failed to initialize GLAD\n";
@@ -55,12 +61,20 @@ namespace Voxels
             mFailure = true;
 
         std::cout << mRenderer << '\n';
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
+        // Setup Platform/Renderer backends
+        ImGui_ImplGlfw_InitForOpenGL(window, true);          // Second param install_callback=true will install GLFW callbacks and chain to existing ones.
+        ImGui_ImplOpenGL3_Init();
         if (mFailure)
             return false;
 
         _createShaders();
-        
+
         return true;
     }
 
@@ -83,7 +97,10 @@ namespace Voxels
         constexpr float blue = 235.f / 255.f;
         while (!glfwWindowShouldClose(window))
         {
-
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+            ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
             float currentFrame = static_cast<float>(glfwGetTime());
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
@@ -95,7 +112,8 @@ namespace Voxels
             world.update(camera);
             world.render(camera);
             crosshair.draw(shaders);
-
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
