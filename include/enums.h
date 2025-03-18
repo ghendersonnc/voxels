@@ -11,6 +11,7 @@ namespace Voxels
     {
         ChunkProgram = 0,
         CrosshairProgram = 1,
+        SunProgram = 2,
     };
 
     enum BlockType : uint8_t

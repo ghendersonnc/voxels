@@ -79,7 +79,7 @@ set(VOXEL_SOURCES
     "src/voxels/World.cpp"
     "src/voxels/Crosshair.cpp"
     "src/voxels/Camera.cpp"
- )
+  "src/voxels/Sun.cpp")
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     "src/Main.cpp"

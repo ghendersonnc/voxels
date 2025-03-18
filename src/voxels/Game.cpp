@@ -14,6 +14,7 @@
 #include "Callbacks.h"
 #include "World.h"
 #include "Crosshair.h"
+#include "Sun.h"
 
 namespace Voxels
 {
@@ -91,6 +92,7 @@ namespace Voxels
         float lastFrame = 0.0f;
         World world(shaders);
         Crosshair crosshair;
+        Sun sun;
 
         constexpr float red = 125.f / 255.f;
         constexpr float green = 206.f / 255.f;
@@ -112,6 +114,7 @@ namespace Voxels
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             world.update(camera);
+            //sun.draw(camera, shaders);
             world.render(camera);
             crosshair.draw(shaders);
             ImGui::Render();
@@ -203,5 +206,6 @@ namespace Voxels
         shaders[ChunkProgram].use();
         shaders[ChunkProgram].setFloat("textureSingleColumn", 0.0625);
         shaders.try_emplace(CrosshairProgram, RESOURCE_PATH "shaders/crosshair.vert", RESOURCE_PATH "shaders/crosshair.frag");
+        shaders.try_emplace(SunProgram, RESOURCE_PATH "shaders/sun.vert", RESOURCE_PATH "shaders/sun.frag");
     }
 }
