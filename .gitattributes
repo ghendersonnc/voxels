@@ -1,1 +1,5 @@
 vendor/glad.c linguist-vendored
+include/renderer/stb_image.h linguist-vendored
+include/KHR/khrplatform.h linguist-vendored
+include/glad/glad.c linguist-vendored
+
