@@ -12,7 +12,7 @@ namespace Voxels
         using namespace Definitions;
 
         float aspect = static_cast<float>(SCREEN_WIDTH) / static_cast<float>(SCREEN_HEIGHT);
-        float x = 0.01f;
+        float x = 0.04f;
         float y = x * aspect;
         std::vector vertices{
             x, y,1.f, 1.f, // top right

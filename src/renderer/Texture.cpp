@@ -1,10 +1,11 @@
 #include "Texture.h"
 
-#include <cstring>
-
+#include <spdlog/spdlog.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include <glad/glad.h>
+
+
 
 namespace Voxels
 {
@@ -25,6 +26,9 @@ namespace Voxels
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
+        } else
+        {
+            SPDLOG_ERROR("COULD NOT LOAD {}", texturePath.data());
         }
 
         stbi_image_free(data);
